@@ -1,15 +1,15 @@
 <template>
   <q-page class="page-container">
-    <div class="content-container">
-      <div class="image-wrapper">
-        <img :src="pageImageUrl" alt="Story Page" class="image-fit" />
-      </div>
-
-      <div class="button-row">
-        <q-btn round icon="arrow_back" @click="goToPrevious" :disable="pageNumber.value <= 1" />
-        <q-btn round icon="arrow_forward" @click="goToNext" />
-      </div>
+    <div class="image-wrapper">
+      <img :src="pageImageUrl" alt="Story Page" class="image-fit" />
     </div>
+
+    <q-footer class="footer-overlay">
+      <div class="row justify-between items-center q-pa-sm" style="max-width: 400px; margin: 0 auto;">
+        <q-btn round flat icon="arrow_back" @click="goToPrevious" :disable="pageNumber.value <= 1" />
+        <q-btn round flat icon="arrow_forward" @click="goToNext" />
+      </div>
+    </q-footer>
   </q-page>
 </template>
 
@@ -20,12 +20,11 @@ import { ref, computed } from 'vue'
 const route = useRoute()
 const router = useRouter()
 
-const storyId = ref(route.params.storyId)
-const pageNumber = ref(parseInt(route.params.pageNumber))
+const storyId = ref(route.params.storyId || 'luna-lion')
+const pageNumber = ref(parseInt(route.params.pageNumber || 1))
 
-const pageImageUrl = computed(
-  () =>
-    `https://mfmiqenyivuigbzhcfow.supabase.co/storage/v1/object/public/story-assets/${storyId.value}/Luna-page${pageNumber.value}.png`,
+const pageImageUrl = computed(() =>
+  new URL(`../assets/stories/${storyId.value}/Luna-page${pageNumber.value}.png`, import.meta.url).href
 )
 
 onBeforeRouteUpdate((to) => {
@@ -46,30 +45,21 @@ function goToPrevious() {
 
 <style scoped>
 .page-container {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-}
-
-.content-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
+  background: linear-gradient(to bottom, #fceabb, #f8b500);
+  position: relative;
 }
 
 .image-wrapper {
-  flex: 1;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: calc(100vh - 100px); /* leave space for buttons and header */
-  overflow: hidden;
 }
 
 .image-fit {
@@ -78,11 +68,11 @@ function goToPrevious() {
   object-fit: contain;
 }
 
-.button-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 400px;
-  padding: 8px;
+.footer-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 </style>
