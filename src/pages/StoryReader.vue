@@ -1,56 +1,62 @@
 <template>
   <q-page class="page-container">
-    <div
-      class="image-wrapper"
-      v-touch-swipe.mouse="onSwipe"
-      @dblclick="goToNext"
-    >
-      <img :src="pageImageUrl" alt="Story Page" class="image-fit" />
-    </div>
+    <transition name="slide" mode="out-in">
+      <div
+        class="image-wrapper"
+        v-touch-swipe.mouse="onSwipe"
+        @dblclick="goToNext"
+        :key="pageNumber"
+      >
+        <img :src="pageImageUrl" alt="Story Page" class="image-fit" />
+      </div>
+    </transition>
 
-   <q-footer class="footer-bar q-pa-sm">
-  <div class="row justify-center items-center q-gutter-md" style="max-width: 400px; margin: 0 auto; width: 100%;">
-    <q-btn
-      round
-      flat
-      color="red"
-      icon="first_page"
-      @click="goToStart"
-      :disable="pageNumber.value === 1"
-      size="lg"
-      aria-label="Start Over"
-    />
-    <q-btn
-      round
-      flat
-      color="red"
-      icon="arrow_back"
-      @click="goToPrevious"
-      :disable="pageNumber.value <= 1"
-      size="lg"
-      aria-label="Previous Page"
-    />
-    <q-btn
-      round
-      flat
-      color="red"
-      icon="arrow_forward"
-      @click="goToNext"
-      size="lg"
-      aria-label="Next Page"
-    />
-    <q-btn
-      round
-      flat
-      color="red"
-      icon="last_page"
-      @click="goToLast"
-      :disable="pageNumber.value === totalPages"
-      size="lg"
-      aria-label="Last Page"
-    />
-  </div>
-</q-footer>
+    <q-footer class="footer-bar q-pa-sm">
+      <div
+        class="row justify-center items-center q-gutter-md"
+        style="max-width: 400px; margin: 0 auto; width: 100%;"
+      >
+        <q-btn
+          round
+          flat
+          color="red"
+          icon="first_page"
+          @click="goToStart"
+          :disable="pageNumber.value === 1"
+          size="lg"
+          aria-label="Start Over"
+        />
+        <q-btn
+          round
+          flat
+          color="red"
+          icon="arrow_back"
+          @click="goToPrevious"
+          :disable="pageNumber.value <= 1"
+          size="lg"
+          aria-label="Previous Page"
+        />
+        <q-btn
+          round
+          flat
+          color="red"
+          icon="arrow_forward"
+          @click="goToNext"
+          size="lg"
+          aria-label="Next Page"
+        />
+        <q-btn
+          round
+          flat
+          color="red"
+          icon="last_page"
+          @click="goToLast"
+          :disable="pageNumber.value === totalPages"
+          size="lg"
+          aria-label="Last Page"
+        />
+      </div>
+    </q-footer>
   </q-page>
 </template>
 
@@ -60,7 +66,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
-const totalPages = 1
+const totalPages = 15
 const storyId = ref(route.params.storyId || 'luna-lion')
 const pageNumber = ref(parseInt(route.params.pageNumber || 1))
 
@@ -74,7 +80,9 @@ onBeforeRouteUpdate((to) => {
 })
 
 function goToNext() {
-  router.push(`/story/${storyId.value}/page/${pageNumber.value + 1}`)
+  if (pageNumber.value < totalPages) {
+    router.push(`/story/${storyId.value}/page/${pageNumber.value + 1}`)
+  }
 }
 
 function goToStart() {
@@ -123,7 +131,7 @@ onBeforeUnmount(() => {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #fef6e4; /* Friendly warm background */
+  background-color: #fef6e4;
   position: relative;
 }
 
@@ -139,24 +147,31 @@ onBeforeUnmount(() => {
 .image-fit {
   max-width: 100%;
   max-height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: all 0.2s ease-in-out;
 }
 
-.footer-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.9); /* Light translucent background */
-  backdrop-filter: blur(6px);            /* Optional: adds a glassy blur effect */
-  z-index: 10;                           /* Ensure it's always above the image */
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow above */
-}
 .footer-bar {
   background: linear-gradient(to bottom, #fef6e4, #fcd5ce);
   border-top: 1px solid #e0e0e0;
   box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
   z-index: 10;
+}
+
+/* Transition styles */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.2s ease-out; /* faster and snappy */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.slide-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-leave-to {
+  transform: translateX(-100%);
 }
 </style>
