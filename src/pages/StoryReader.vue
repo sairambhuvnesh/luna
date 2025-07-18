@@ -3,6 +3,7 @@
     <div
       class="image-wrapper"
       v-touch-swipe.mouse="onSwipe"
+      @dblclick="goToNext"
     >
       <img :src="pageImageUrl" alt="Story Page" class="image-fit" />
     </div>
@@ -87,12 +88,14 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(to bottom, #fef6e4, #fcd5ce);
 }
 
 .image-fit {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  transition: all 0.2s ease-in-out;
 }
 
 .footer-overlay {
