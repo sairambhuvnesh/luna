@@ -13,7 +13,9 @@
 
 
 
+import {TouchSwipe} from 'quasar'
 
 
-export default { config: {"brand":{"primary":"#e4cf45ff"}} }
+
+export default { config: {"brand":{"primary":"#e4cf45ff"}},directives: {TouchSwipe} }
 
