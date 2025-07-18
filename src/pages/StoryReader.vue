@@ -1,6 +1,9 @@
 <template>
   <q-page class="page-container">
-    <div class="image-wrapper">
+    <div
+      class="image-wrapper"
+      v-touch-swipe.mouse="onSwipe"
+    >
       <img :src="pageImageUrl" alt="Story Page" class="image-fit" />
     </div>
 
@@ -15,7 +18,7 @@
 
 <script setup>
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -41,6 +44,30 @@ function goToPrevious() {
     router.push(`/story/${storyId.value}/page/${pageNumber.value - 1}`)
   }
 }
+
+function onSwipe({ direction }) {
+  if (direction === 'left') {
+    goToNext()
+  } else if (direction === 'right') {
+    goToPrevious()
+  }
+}
+
+function handleKey(event) {
+  if (event.key === 'Enter' || event.key === 'ArrowRight') {
+    goToNext()
+  } else if (event.key === 'ArrowLeft') {
+    goToPrevious()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKey)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKey)
+})
 </script>
 
 <style scoped>
@@ -50,7 +77,7 @@ function goToPrevious() {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: linear-gradient(to bottom, #fceabb, #f8b500);
+  background-color: #fef6e4; /* Friendly warm background */
   position: relative;
 }
 
@@ -73,6 +100,6 @@ function goToPrevious() {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 </style>
