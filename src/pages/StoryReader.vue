@@ -60,7 +60,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
-const totalPages = 15
+const totalPages = 1
 const storyId = ref(route.params.storyId || 'luna-lion')
 const pageNumber = ref(parseInt(route.params.pageNumber || 1))
 
@@ -139,7 +139,7 @@ onBeforeUnmount(() => {
 .image-fit {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   transition: all 0.2s ease-in-out;
 }
 
